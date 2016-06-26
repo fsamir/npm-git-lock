@@ -91,7 +91,7 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
             return git(`rev-list ${packageJsonSha1}`, {silent: true})
                 .then(() => {
                     log.debug(`Running 'npm preinstall'`);
-                    return runNpmScript('preinstall')
+                    return runNpmScript('preinstall');
                 })
                 .then(() => git(`checkout tags/${packageJsonSha1}`, {silent: true}))
                 .then(() => {
@@ -105,7 +105,7 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
                 })
                 .then(() => {
                     log.debug(`Running 'npm postinstall'`);
-                    return runNpmScript('postinstall')
+                    return runNpmScript('postinstall');
                 })
                 .catch(installPackagesTagAndPushToRemote);
         })
