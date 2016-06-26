@@ -89,7 +89,10 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
             log.debug(`Remote ${repo} is in node_modules, checking out ${packageJsonSha1} tag`);
             process.chdir(`${cwd}/node_modules`);
             return git(`rev-list ${packageJsonSha1}`, {silent: true})
-                .then(() => runNpmScript('preinstall'))
+                .then(() => {
+                    log.debug(`Running 'npm preinstall'`);
+                    return runNpmScript('preinstall')
+                })
                 .then(() => git(`checkout tags/${packageJsonSha1}`, {silent: true}))
                 .then(() => {
                     log.debug(`Cleanup checked out commit`);
@@ -100,7 +103,10 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
                         return rebuildAndIgnorePlatformSpecific();
                     }
                 })
-                .then(() => runNpmScript('postinstall'))
+                .then(() => {
+                    log.debug(`Running 'npm postinstall'`);
+                    return runNpmScript('postinstall')
+                })
                 .catch(installPackagesTagAndPushToRemote);
         })
         .then(() => {
@@ -280,6 +286,7 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
             })
             .then(() => {
                 if (crossPlatform) {
+                    log.debug(`Running 'npm preinstall'`);
                     return runNpmScript('preinstall');
                 }
                 return Promise.resolve();
@@ -305,6 +312,8 @@ module.exports = (cwd, {repo, verbose, crossPlatform, incrementalInstall, produc
             })
             .then(() => {
                 if (crossPlatform) {
+                    log.debug(`Running 'npm postinstall'`);
+
                     return runNpmScript('postinstall');
                 }
                 return Promise.resolve();
